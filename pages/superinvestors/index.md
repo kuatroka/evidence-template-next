@@ -21,6 +21,7 @@ select *,
 ROUND(value_usd / sum(value_usd) over(),3) as pct_pct
 from every_cik_qtr
 where quarter = '${latest_quarter_one_value}'
+order by value_usd DESC
 ```
 
 
@@ -32,31 +33,31 @@ where quarter = '${prev_quarter_one_value}'
 order by value_usd DESC
 ```
 
+```prev_qtr_treemap
+select cik_name as name,
+    value_usd as value, 
+    pct_pct
+from ${every_cik_prev_qtr}
+```
+
 ```latest_qtr_treemap
 select cik_name as name,
     value_usd as value,
-    ROUND(value_usd / sum(value_usd) over(),3) as pct
+    pct_pct
 from ${every_cik_latest_qtr}
 ```
 
 ```latest_qtr_treemap_filtered
 select cik_name as name,
     value_usd as value,
-    ROUND(value_usd / sum(value_usd) over(),3) as pct
+    pct_pct
 from ${every_cik_every_qtr_filtered}
 ```
 
-```prev_qtr_treemap
-select cik_name as name,
-    value_usd as value,
-    ROUND(value_usd / sum(value_usd) over(),3) as pct
-from ${every_cik_prev_qtr}
-```
-
 ```avg
-select ROUND(avg(num_ciks_per_quarter),0) as avg_ciks,
-        ROUND(avg(num_cusip_per_quarter),0) as avg_assets,
-        ROUND(avg(total_value_per_quarter),0) as avg_value,
+select ROUND(avg(num_ciks_per_quarter_num0),0) as avg_ciks,
+        ROUND(avg(num_cusip_per_quarter_num0),0) as avg_assets,
+        ROUND(avg(total_value_per_quarter_usd),0) as avg_value,
 from cik_cusip_per_quarter
 ```
 
@@ -70,9 +71,9 @@ from cik_cusip_per_quarter
 SELECT
     t.year,
     t.max_quarter_end_date,
-    q.num_ciks_per_quarter,
-    q.num_cusip_per_quarter, 
-    q.total_value_per_quarter
+    q.num_ciks_per_quarter_num0,
+    q.num_cusip_per_quarter_num0, 
+    q.total_value_per_quarter_usd AS total_value_per_quarter_usd
     FROM (
     SELECT 
         SUBSTR(quarter, 1, 4) AS year,
@@ -94,7 +95,7 @@ SELECT
 const latest_quarter = cik_cusip_per_quarter[0]
 const prev_quarter = cik_cusip_per_quarter[1]
 const prev_prev_quarter = cik_cusip_per_quarter[2]
-const total_years = cik_cusip_per_quarter.map(q => q.total_years)[0]
+// const total_years = cik_cusip_per_quarter.map(q => q.total_years)[0]
 const total_quarters = cik_cusip_per_quarter.map(q => q.total_quarters)[0]
 const total_ciks = cik_cusip_per_quarter.map(q => q.total_ciks)[0]
 const latest_quarter_one_value = cik_cusip_per_quarter.map(q => q.quarter)[0]
@@ -135,12 +136,12 @@ in the years from 1999 to 2013.
 interact and filter on other quarters and see the same cards (BigValue) with their dynamically
 changing data* -->
 
-# Last **{total_years}** Years
+# **{cik_cusip_per_quarter[0].total_years}** Years Of 13F Filings
 
 <BigValue
     data={cik_cusip_per_quarter}
     title="All Superinvestors"
-    value=total_ciks
+    value=total_ciks_num0
 />
 
 <BigValue
@@ -158,21 +159,21 @@ changing data* -->
 
 <BigValue
     data={avg}
-    title="Avg Superinvestors/Qtr"
+    title="Avg Superinvestors per Qtr"
     value=avg_ciks
     fmt='num0'
 />
 
 <BigValue
     data={avg}
-    title="Avg Assets/Qtr"
+    title="Avg Assets per Qtr"
     value=avg_assets
     fmt='num0'
 />
 
 <BigValue
     data={avg}
-    title="Avg Value/Qtr"
+    title="Avg Value per Qtr"
     value=avg_value
     fmt='$#,##0.00,,,,"T"'
 />
@@ -184,14 +185,27 @@ it needs to be Trillions* -->
 <hr>
 
 <Tabs>
+    <Tab label="Every Cik Last Qtr">
+        <DataTable data="{every_cik_prev_qtr}" search="true">
+            <Column id="cik" title='cik'/>
+            <Column id="value_usd" title='Value'/>
+        </DataTable>
+
+    </Tab>
+    <Tab label="Table">
+        <DataTable data="{cik_cusip_per_quarter2}" search="true">
+            <Column id="year" title='Year'/>
+            <Column id="total_value_per_quarter_usd" title='Value'/>
+        </DataTable>
+
+    </Tab>
+
     <Tab label="Value">
         <AreaChart 
             data={cik_cusip_per_quarter2}
             x=year 
-            y=total_value_per_quarter
+            y=total_value_per_quarter_usd
             sort=asc
-            fmt='#,##0.0,,,"B"'
-            yfmt='$#,##0.00,,,,"T"'
         />
 
     </Tab>
@@ -200,7 +214,7 @@ it needs to be Trillions* -->
         <BarChart 
         data={cik_cusip_per_quarter2}
         x=year 
-        y=num_ciks_per_quarter
+        y=num_ciks_per_quarter_num0
         yAxisTitle="# of Superinvestors"
         />
     </Tab>
@@ -209,7 +223,7 @@ it needs to be Trillions* -->
         <BarChart 
         data={cik_cusip_per_quarter2}
         x=year 
-        y=num_cusip_per_quarter
+        y=num_cusip_per_quarter_num0
         fmt= '#,##0'
         yAxisTitle="# of unique assets"
         />
@@ -222,14 +236,13 @@ it needs to be Trillions* -->
 <!-- # There has been **<Value data={max_qtr} column=num_ciks/>** superinvestors <br> between **1999** and **<Value data={max_qtr} column=max_year/>**  -->
 
 <!-- <DataTable data={all_ciks_query} link="cik" search="true"/> -->
-# Last Completed Quarter: {prev_quarter_one_value}
-### Closed on: *{cik_cusip_per_quarter[1].last_reporting_date}*
-
+# Last Completed Quarter: <span style="color: goldenrod;">{prev_quarter_one_value}</span>
+### Filing closed on:**{cik_cusip_per_quarter[1].last_reporting_date}**
 
 <BigValue
     data={prev_quarter}
     title="Total Value"
-    value=total_value_per_quarter  
+    value=total_value_per_quarter_usd  
     fmt='$#,##0.0,,,,"T"'  
     comparison=prc_change_total_value
     comparisonTitle="% Over {prev_prev_quarter_one_value}"
@@ -238,7 +251,7 @@ it needs to be Trillions* -->
 <BigValue
     data={prev_quarter}
     title="# of Superinvestors"
-    value=num_ciks_per_quarter  
+    value=num_ciks_per_quarter_num0  
     fmt='#,##0'  
     comparison=prc_change_cik
     comparisonTitle="% Over {prev_prev_quarter_one_value}"
@@ -247,7 +260,7 @@ it needs to be Trillions* -->
 <BigValue
     data={prev_quarter}
     title="# of Assets"
-    value=num_cusip_per_quarter  
+    value=num_cusip_per_quarter_num0  
     fmt='#,##0'  
     comparison=prc_change_cusip
     comparisonTitle="% Over {prev_prev_quarter_one_value}"
@@ -276,7 +289,7 @@ it needs to be Trillions* -->
                     if (value >= 1e12) {
                         formattedValue = (value / 1e12).toLocaleString('en-US', { maximumFractionDigits: 2 }) + 'T';
                     } else if (value >= 1e9) {
-                        formattedValue = (value / 1e9).toLocaleString('en-US', { maximumFractionDigits: 2 }) + 'M';
+                        formattedValue = (value / 1e9).toLocaleString('en-US', { maximumFractionDigits: 2 }) + 'B';
                     } else if (value >= 1e6) {
                         formattedValue = (value / 1e6).toLocaleString('en-US', { maximumFractionDigits: 2 }) + 'M';
                     } else {
@@ -284,7 +297,7 @@ it needs to be Trillions* -->
                     }
                     return `${params.data.name}<br/>
                     $${formattedValue}<br/>
-                    ${params.data.pct*100}%`;
+                    ${(params.data.pct_pct*100).toFixed(2)}% `;
                 },
     },
         series: [
@@ -312,13 +325,16 @@ it needs to be Trillions* -->
         ]
     }
 }/>
-**TODO**Sort out the formatting for percentage. Now some are shown nicely and some have too many decimals
+
+**TODO**:*By dedault, under the chart, the title shows some arbitrary tile's name*
+
+
     </Tab>
 
 </Tabs>
 
 
-# In Progress Quarter: {latest_quarter_one_value}
+# In Progress Quarter: <span style="color: goldenrod;">{latest_quarter_one_value}</span>
 ### Will close on: *{cik_cusip_per_quarter[0].last_reporting_date}*
 <!-- **TODO**:*I could add the number of days till the end of period* -->
 
@@ -326,7 +342,7 @@ it needs to be Trillions* -->
 <BigValue
     data={latest_quarter}
     title="Total Value"
-    value=total_value_per_quarter  
+    value=total_value_per_quarter_usd  
     fmt='$#,##0.0,,,,"T"'  
     comparison=prc_change_total_value
     comparisonTitle="% Over {prev_quarter_one_value}"
@@ -335,7 +351,7 @@ it needs to be Trillions* -->
 <BigValue
     data={latest_quarter}
     title="# of Superinvestors"
-    value=num_ciks_per_quarter  
+    value=num_ciks_per_quarter_num0  
     fmt='#,##0'  
     comparison=prc_change_cik
     comparisonTitle="% Over {prev_quarter_one_value}"
@@ -344,7 +360,7 @@ it needs to be Trillions* -->
 <BigValue
     data={latest_quarter}
     title="# of Superinvestors"
-    value=num_cusip_per_quarter  
+    value=num_cusip_per_quarter_num0  
     fmt='#,##0'  
     comparison=prc_change_cik
     comparisonTitle="% Over {prev_quarter_one_value}"
@@ -381,7 +397,7 @@ it needs to be Trillions* -->
                     }
                     return `${params.data.name}<br/>
                     $${formattedValue}<br/>
-                    ${params.data.pct*100}%`;
+                    ${(params.data.pct_pct*100).toFixed(2)}% `;
                 },
     },
         series: [
@@ -409,16 +425,16 @@ it needs to be Trillions* -->
         ]
     }
 }/>
-**TODO**Sort out the formatting for percentage. Now some are shown nicely and some have too many decimals
+
+**TODO**:*By dedault, under the chart, the title shows some arbitrary tile's name*
+
     </Tab>
 
 </Tabs>
 
-# Select Quarter: {inputYearQuater}
+# Select Quarter: <span style="color: goldenrod;">{inputYearQuater}</span>
 
 <RangeInputYear min='1999Q1' max={max} bind:value={inputYearQuater} />
-
-**TODO**:*correct all the Big Values*
 
 <BigValue
     data={summary_filtered}
@@ -447,6 +463,10 @@ it needs to be Trillions* -->
 />
     <!-- comparison=prc_change_cik
     comparisonTitle="% Over {prev_quarter_one_value}" -->
+
+**TODO**:*Formatting of values in the table is not dynamic - needs correction*
+**TODO**:*The search box is not synchronised with the slider. When inputting search term and 
+selecting values on slider the results ignore the search term* 
 
 <Tabs>
     <Tab label="Table">
@@ -479,7 +499,7 @@ it needs to be Trillions* -->
                     }
                     return `${params.data.name}<br/>
                     $${formattedValue}<br/>
-                    ${params.data.pct*100}%`;
+                    ${(params.data.pct_pct*100).toFixed(2)}% `;
                 },
     },
         series: [
@@ -507,7 +527,6 @@ it needs to be Trillions* -->
         ]
     }
 }/>
-**TODO**Sort out the formatting for percentage. Now some are shown nicely and some have too many decimals
     </Tab>
 
 </Tabs>
@@ -545,10 +564,10 @@ it needs to be Trillions* -->
 
 <!-- <ScatterPlot 
     data={cik_cusip_per_quarter} 
-    y=num_cusip_per_quarter 
-    x=total_value_per_quarter
-    xAxisTitle="total_value_per_quarter" 
-    yAxisTitle="num_cusip_per_quarter" 
+    y=num_cusip_per_quarter_num0 
+    x=total_value_per_quarter_usd
+    xAxisTitle="total_value_per_quarter_usd" 
+    yAxisTitle="num_cusip_per_quarter_num0" 
 /> -->
 
 

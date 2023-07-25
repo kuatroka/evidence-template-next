@@ -1,9 +1,18 @@
 SELECT 
 cik::String as cik, 
 any_value(cik_name) as cik_name, 
-quarter as quarter,
-SUM(value) AS value_usd,
-COUNT(DISTINCT cusip) as num_assets
+quarter,
+ANY_VALUE(CAST(SUBSTR(quarter, 1, 4) AS INTEGER) || 
+    CASE 
+            WHEN quarter LIKE '%Q1' THEN '-03-31'
+            WHEN quarter LIKE '%Q2' THEN '-06-30'  
+            WHEN quarter LIKE '%Q3' THEN '-09-30'
+            WHEN quarter LIKE '%Q4' THEN '-12-31'
+        END) AS quarter_end_date,
+SUM(value) AS value_usd, 
+LAG(SUM(value)) OVER (order by cik, quarter) as prev_value_usd,
+COUNT(DISTINCT cusip) as num_assets,
+LAG(COUNT(DISTINCT cusip)) OVER (order by cik, quarter) as prev_num_assets
 FROM main.main
 WHERE accession_number != 'SYNTHETIC-CLOSE' AND quarter > '1998Q1'
 GROUP BY cik, quarter
