@@ -23,5 +23,8 @@
     "jsonwebtoken": "9.0.0",
     "trim@<0.0.3": ">0.0.3",
     "sqlite3": "5.1.5"
+  },
+  "devDependencies": {
+    "svelte-range-slider-pips": "^2.1.1"
   }
 }

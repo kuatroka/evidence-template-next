@@ -1,11 +1,16 @@
-
-
 ```cik_quarters_table
 from every_cik_qtr
 select cik_name, quarter, quarter_end_date, value_usd, num_assets AS num_assets_num0
 where cik = '${$page.params.superinvestor}'
 order by quarter desc
 ```
+```cik_max_min_quarter
+from every_cik_qtr
+select MAX(quarter) AS max_quarter, MIN(quarter) AS min_quarter
+where cik = '${$page.params.superinvestor}'
+group by all
+```
+
 
 ```cik_quarters_table_filtered_quarter
 from every_cik_qtr
@@ -28,12 +33,15 @@ order by quarter asc
 
 <script>
 // /** @type {import('./$types').PageData} */
+    import { quarter } from '/../../stores.js';
+    
     let inputYearQuater_cik = cik_quarters_table.map(q => q.quarter)[0]
-    let min_cik = cik_quarters_table.map(q => q.quarter)[cik_quarters_table.length-1]
-    let max_cik = cik_quarters_table.map(q => q.quarter)[0]
+    $: quarter.set(inputYearQuater_cik)   
+    
+    let min_quarter = cik_max_min_quarter.map(q => q.min_quarter)[0]
+    let max_quarter = cik_max_min_quarter.map(q => q.max_quarter)[0]    
 </script>
 
-{min_cik}, {inputYearQuater_cik}
 
 # <span style="color: goldenrod;">**<Value data={cik_quarters_table}  column=cik_name row=0/>**</span>
 ## Overview
@@ -78,16 +86,19 @@ composition for each quarter being selected with a slider*
     </Tab>
 </Tabs>
 
-# Portfolio per Quarter: <span style="color: goldenrod;">{inputYearQuater_cik}</span>
+# Portfolio: <span style="color: goldenrod;">{inputYearQuater_cik}</span>
+
+quarter: {$quarter}
+
+inputYearQuater_cik: {inputYearQuater_cik}
+
+min_quarter: {min_quarter}
+
+max_quarter: {max_quarter}
 
 
-<RangeInputYear min={min_cik} max={max_cik} bind:value={inputYearQuater_cik} />
+<RangeInputYear min={min_quarter} max={max_quarter} bind:value={inputYearQuater_cik} />
 
-**TODO**:*Correct the slider component so it uses exactly the values available for the selected cik*
-
-**TODO**:*Correct the slider component so it only uses the values for quarters that are actually*
-*available. Now, it just has all quarter between two points in time, but sometimes the dataset has*
-*gaps in it, so the quarters that are not in the dataset should not be available in the slider*
 
 <BigValue
     data={cik_quarters_table_filtered_quarter}
@@ -132,8 +143,7 @@ composition for each quarter being selected with a slider*
 
 <!-- # **<Value data={props.entries} column=cik_name />** -->
  <!-- in **{$page.params.superinvestor}**: -->
-**TODO**:*Add the total value for the quarter as /BigValue here* <br>
-**TODO**:*To the table below add the percentage part of the whole columnn for each CUSIP*<br>
+
 
 <!-- <DataTable
     data={props.entries} search=true>
@@ -143,3 +153,50 @@ composition for each quarter being selected with a slider*
     <Column id="pct" title='%Fund', fmt='#,##0%'/>
     <Column id="avg_price_usd" title='Reported Price'/>
 </DataTable>  -->
+
+
+
+
+
+<!-- # **<Value data={props.entries} column=cik_name />** in **{inputYearQuater_cik}**: -->
+
+<Tabs>
+    <Tab label="Table">
+        <DataTable data="{props.entries}" search="true" rows=9>
+            <Column id="cusip_ticker" title='Ticker'/>
+            <Column id="name" />
+            <Column id="value_usd" />            
+            <Column id="pct_pct" title='%'/>
+        </DataTable>
+
+    </Tab>
+
+    <Tab label="Chart">
+        <BarChart 
+            data={props.entries} 
+            swapXY=true 
+            x=name 
+            y=pct_pct 
+            xType=category 
+            sort=false
+        />
+
+    </Tab>
+</Tabs>
+
+**TODO**:*Correct the slider component so it uses exactly the values available for the selected cik*
+
+**TODO**:*Correct the slider component so it only uses the values for quarters that are actually*
+*available. Now, it just has all quarter between two points in time, but sometimes the dataset has*
+*gaps in it, so the quarters that are not in the dataset should not be available in the slider*
+
+<SliderYear />
+<!-- {#each $page as record}
+
+<li>{JSON.stringify(record, null, 2)}</li>
+
+{/each} -->
+
+
+<!-- {JSON.stringify(Object.keys($page), null, 2)} -->
+<!-- {JSON.stringify(Object.keys($page.data.data.cik_quarters_area[0]), null, 2)} -->

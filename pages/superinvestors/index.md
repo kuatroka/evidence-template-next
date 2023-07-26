@@ -270,6 +270,7 @@ it needs to be Trillions* -->
     <Tab label="Table">
         <DataTable data="{every_cik_prev_qtr}" link="cik" search="true">
             <Column id="cik_name" title='Superinvestor'/>
+            <Column id="num_assets" title='# Assets'/>
             <Column id="value_usd" title='Value' fmt='#,##0.0,,,"B"'/>
             <Column id="pct_pct" title='%'/>
         </DataTable>
@@ -370,6 +371,7 @@ it needs to be Trillions* -->
     <Tab label="Table">
         <DataTable data="{every_cik_latest_qtr}" link="cik" search="true">
             <Column id="cik_name" title='Superinvestor'/>
+            <Column id="num_assets" title='# Assets'/>
             <Column id="value_usd" title='Value' fmt='#,##0.0,,,"B"'/>
             <Column id="pct_pct" title='%'/>
         </DataTable>
@@ -530,6 +532,8 @@ selecting values on slider the results ignore the search term*
     </Tab>
 
 </Tabs>
+
+
 
 
 

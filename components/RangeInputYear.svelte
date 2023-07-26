@@ -1,7 +1,7 @@
 <script>
   export let min = '1999Q1';
   export let max = '2023Q1';
-  export let value = '2023Q2';
+  export let value = '2023Q1';
 
   const [year, quarter] = value.split('Q');
   const yearNum = parseInt(year); 
@@ -38,7 +38,7 @@
     id="rangeInput"
     type="range" 
     min="0"
-    max={totalQuarters - 3}
+    max={totalQuarters}
     bind:value={sliderValue}
     on:input={handleInput}
     style="width: 100%;
