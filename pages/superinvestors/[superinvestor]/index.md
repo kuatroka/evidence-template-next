@@ -33,15 +33,18 @@ order by quarter asc
 
 <script>
 // /** @type {import('./$types').PageData} */
-    import { quarter } from '/../../stores.js';
+    // import { quarter } from '/../../stores.js';
+    $: quarters = cik_quarters_area.map(item => (item.quarter));
     
-    let inputYearQuater_cik = cik_quarters_table.map(q => q.quarter)[0]
-    $: quarter.set(inputYearQuater_cik)   
+    let inputYearQuater_cik = cik_quarters_table.map(q => q.quarter)[1]
+    // $: quarter.set(inputYearQuater_cik)   
     
     let min_quarter = cik_max_min_quarter.map(q => q.min_quarter)[0]
     let max_quarter = cik_max_min_quarter.map(q => q.max_quarter)[0]    
 </script>
+{JSON.stringify(quarters, null, ' ')}
 
+<SliderYear2  {quarters}/>
 
 # <span style="color: goldenrod;">**<Value data={cik_quarters_table}  column=cik_name row=0/>**</span>
 ## Overview
@@ -88,7 +91,7 @@ composition for each quarter being selected with a slider*
 
 # Portfolio: <span style="color: goldenrod;">{inputYearQuater_cik}</span>
 
-quarter: {$quarter}
+<!-- quarter: {$quarter} -->
 
 inputYearQuater_cik: {inputYearQuater_cik}
 
@@ -192,7 +195,7 @@ max_quarter: {max_quarter}
 
 <SliderYear />
 
-<SliderYear2 />
+
 
 
 <!-- {#each $page as record}

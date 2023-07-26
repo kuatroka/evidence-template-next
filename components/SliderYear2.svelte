@@ -1,20 +1,22 @@
 <script>
   import RangeSlider from "svelte-range-slider-pips";
-  const quarters = [ 
-    { quarter: "1999Q1"},
-    { quarter: "1999Q2" },
-    { quarter: "1999Q3" },
-    { quarter: "2015Q1" },
-    { quarter: "2023Q2"},
-    { quarter: "2023Q3"}, 
-    {quarter: "2023Q4"}
+  
+  export let quarters = [ 
+    "1999Q1",
+    "1999Q2",
+    "1999Q3",
+		"2000Q3",
+    "2015Q1",
+    "2023Q2",
+    "2023Q3", 
+    "2023Q4"
   ];
   
   $: min = 0; 
   $: max = quarters.length - 1;
   
   $: selectedQuarter = max;  
-  $: formattedQuarter = quarters[selectedQuarter].quarter;
+  $: formattedQuarter = quarters[selectedQuarter];
   
   </script>
   
@@ -27,7 +29,7 @@
     bind:value={selectedQuarter}  
     on:change={({detail: {value}}) => { 
       selectedQuarter = value;
-      formattedQuarter = quarters[selectedQuarter].quarter;
+      formattedQuarter = quarters[selectedQuarter];
     }}    
   />
   </div>

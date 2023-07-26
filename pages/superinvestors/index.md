@@ -185,6 +185,15 @@ it needs to be Trillions* -->
 <hr>
 
 <Tabs>
+    <Tab label="Value">
+        <AreaChart 
+            data={cik_cusip_per_quarter2}
+            x=year 
+            y=total_value_per_quarter_usd
+            sort=asc
+        />
+
+    </Tab>
     <Tab label="Every Cik Last Qtr">
         <DataTable data="{every_cik_prev_qtr}" search="true">
             <Column id="cik" title='cik'/>
@@ -200,15 +209,7 @@ it needs to be Trillions* -->
 
     </Tab>
 
-    <Tab label="Value">
-        <AreaChart 
-            data={cik_cusip_per_quarter2}
-            x=year 
-            y=total_value_per_quarter_usd
-            sort=asc
-        />
 
-    </Tab>
 
     <Tab label="Superinvestors">
         <BarChart 
