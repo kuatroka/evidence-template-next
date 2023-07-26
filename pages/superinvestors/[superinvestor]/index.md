@@ -191,6 +191,10 @@ max_quarter: {max_quarter}
 *gaps in it, so the quarters that are not in the dataset should not be available in the slider*
 
 <SliderYear />
+
+<SliderYear2 />
+
+
 <!-- {#each $page as record}
 
 <li>{JSON.stringify(record, null, 2)}</li>
