@@ -11,6 +11,8 @@
     "2023Q3", 
     "2023Q4"
   ];
+  export let formattedQuarter = '';
+  export let selectedQuarter = '';
   
   $: min = 0; 
   $: max = quarters.length - 1;
@@ -34,6 +36,6 @@
   />
   </div>
   
-  <p>
+  <!-- <p>
     Selected Quarter: {formattedQuarter}
-  </p>
+  </p> -->

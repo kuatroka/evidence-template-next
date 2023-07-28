@@ -102,7 +102,7 @@ const latest_quarter_one_value = cik_cusip_per_quarter.map(q => q.quarter)[0]
 const prev_quarter_one_value = cik_cusip_per_quarter.map(q => q.quarter)[1]
 const prev_prev_quarter_one_value = cik_cusip_per_quarter.map(q => q.quarter)[2]
 const current_year_one_value = cik_cusip_per_quarter.map(q => q.quarter.slice(0, 4))[0]
-let inputYearQuater = prev_quarter_one_value
+
 let min = '1999Q1'
 let max = latest_quarter_one_value
 function dynamicFormat(value) {
@@ -116,6 +116,9 @@ function dynamicFormat(value) {
         return value.toLocaleString();
     }
 }
+
+let quarters = cik_cusip_per_quarter.map(item => (item.quarter)).reverse();
+$: inputYearQuater = quarters[quarters.length -1];
 </script>
 
 <Modal title="Data Quality Warning and Site's Purpose" buttonText='Open Modal'> 
@@ -157,27 +160,6 @@ changing data* -->
 />
 
 
-<BigValue
-    data={avg}
-    title="Avg Superinvestors per Qtr"
-    value=avg_ciks
-    fmt='num0'
-/>
-
-<BigValue
-    data={avg}
-    title="Avg Assets per Qtr"
-    value=avg_assets
-    fmt='num0'
-/>
-
-<BigValue
-    data={avg}
-    title="Avg Value per Qtr"
-    value=avg_value
-    fmt='$#,##0.00,,,,"T"'
-/>
-
 
 <!-- **TODO**:*correct the tooltip formatting for Line Chart for Value, Assets. Now it shows data in Billions and 
 it needs to be Trillions* -->
@@ -194,22 +176,6 @@ it needs to be Trillions* -->
         />
 
     </Tab>
-    <Tab label="Every Cik Last Qtr">
-        <DataTable data="{every_cik_prev_qtr}" search="true">
-            <Column id="cik" title='cik'/>
-            <Column id="value_usd" title='Value'/>
-        </DataTable>
-
-    </Tab>
-    <Tab label="Table">
-        <DataTable data="{cik_cusip_per_quarter2}" search="true">
-            <Column id="year" title='Year'/>
-            <Column id="total_value_per_quarter_usd" title='Value'/>
-        </DataTable>
-
-    </Tab>
-
-
 
     <Tab label="Superinvestors">
         <BarChart 
@@ -228,6 +194,21 @@ it needs to be Trillions* -->
         fmt= '#,##0'
         yAxisTitle="# of unique assets"
         />
+    </Tab>
+
+    <Tab label="Every Cik Last Qtr">
+        <DataTable data="{every_cik_prev_qtr}" search="true">
+            <Column id="cik" title='cik'/>
+            <Column id="value_usd" title='Value'/>
+        </DataTable>
+
+    </Tab>
+    <Tab label="Table">
+        <DataTable data="{cik_cusip_per_quarter2}" search="true">
+            <Column id="year" title='Year'/>
+            <Column id="total_value_per_quarter_usd" title='Value'/>
+        </DataTable>
+
     </Tab>
 </Tabs>
 
@@ -268,19 +249,9 @@ it needs to be Trillions* -->
 />
 
 <Tabs>
-    <Tab label="Table">
-        <DataTable data="{every_cik_prev_qtr}" link="cik" search="true">
-            <Column id="cik_name" title='Superinvestor'/>
-            <Column id="num_assets" title='# Assets'/>
-            <Column id="value_usd" title='Value' fmt='#,##0.0,,,"B"'/>
-            <Column id="pct_pct" title='%'/>
-        </DataTable>
-
-    </Tab>
-
     <Tab label="Chart">
 
-<ECharts config={
+    <ECharts config={
     {title: {
             text: 'Value by Asset',
             left: 'center'},
@@ -333,6 +304,16 @@ it needs to be Trillions* -->
 
     </Tab>
 
+    <Tab label="Table">
+        <DataTable data="{every_cik_prev_qtr}" link="cik" search="true">
+            <Column id="cik_name" title='Superinvestor'/>
+            <Column id="value_usd" title='Value' fmt='#,##0.0,,,"B"'/>
+            <Column id="pct_pct" title='%'/>
+            <Column id="num_assets" title='# Assets'/>
+        </DataTable>
+
+    </Tab>
+
 </Tabs>
 
 
@@ -372,9 +353,9 @@ it needs to be Trillions* -->
     <Tab label="Table">
         <DataTable data="{every_cik_latest_qtr}" link="cik" search="true">
             <Column id="cik_name" title='Superinvestor'/>
-            <Column id="num_assets" title='# Assets'/>
             <Column id="value_usd" title='Value' fmt='#,##0.0,,,"B"'/>
             <Column id="pct_pct" title='%'/>
+            <Column id="num_assets" title='# Assets'/>
         </DataTable>
 
     </Tab>
@@ -437,7 +418,7 @@ it needs to be Trillions* -->
 
 # Select Quarter: <span style="color: goldenrod;">{inputYearQuater}</span>
 
-<RangeInputYear min='1999Q1' max={max} bind:value={inputYearQuater} />
+<RangeInputYear {quarters} bind:quarterValue={inputYearQuater} />
 
 <BigValue
     data={summary_filtered}

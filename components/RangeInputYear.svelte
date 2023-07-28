@@ -1,7 +1,70 @@
 <script>
+  export let quarters = [ 
+    "1999Q1",
+    "1999Q2",
+    "1999Q3",
+    "2000Q3",
+    "2015Q1",
+    "2023Q2",
+    "2023Q3", 
+    "2023Q4"
+  ];	
+	
+
+  let sliderValue = quarters.length - 1; // Initial slider value
+	export let quarterValue = quarters[quarters.length - 1];
+
+  function handleInput(event) {
+    sliderValue = event.target.value;
+  }
+	$: quarterValue = quarters[sliderValue]
+
+	// export let min = quarters[0]
+	// export let max = quarters[quarters.length - 1]
+</script>
+
+<div class="p-2 w-full font-sans text-sm rounded-md">
+  <label for="rangeInput">
+    <!-- Quarter: {quarters[sliderValue]} -->
+  </label>
+
+  <input 
+    id="rangeInput"
+    type="range" 
+    min="0"
+    max={quarters.length - 1}
+    bind:value={sliderValue}
+    on:input={handleInput}
+    style="width: 100%;
+    accent-color: orange;
+    background-color: #ccc;"
+  >
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <script>
   export let min = '1999Q1';
   export let max = '2023Q1';
-  export let value = '2023Q1';
+  export let value = '2000Q1';
 
   const [year, quarter] = value.split('Q');
   const yearNum = parseInt(year); 
@@ -9,7 +72,8 @@
 
   const minYear = parseInt(min.substring(0, 4));
   const maxYear = parseInt(max.substring(0, 4));
-  const totalQuarters = (maxYear - minYear + 1) * 4;
+  const maxQuarter = parseInt(max.substring(5));
+  const totalQuarters = (maxYear - minYear) * 4 + maxQuarter - 1;
 
   const mapNumberToYearQuarter = (num) => {
     const year = Math.floor(num / 4) + minYear;
@@ -27,14 +91,15 @@
     sliderValue = event.target.value;
     value = mapNumberToYearQuarter(sliderValue);
   }
-</script>
+</script> -->
 
-<div class="p-2 w-full font-sans text-sm rounded-md">
-  <label for="rangeInput">
+
+<!-- <div class="p-2 w-full font-sans text-sm rounded-md">
+  <label for="rangeInput"> -->
     <!-- Year: {mapNumberToYearQuarter(sliderValue)} -->
-  </label>
+  <!-- </label> -->
 
-  <input 
+  <!-- <input 
     id="rangeInput"
     type="range" 
     min="0"
@@ -44,5 +109,5 @@
     style="width: 100%;
     accent-color: orange;
     background-color: #ccc;"
-  >
-</div>
+  > -->
+<!-- </div> -->

@@ -1,3 +1,10 @@
+<!-- -- ```prop_entries_filtered
+-- from props.entries
+-- select *
+-- limit 5
+-- ``` -->
+
+
 ```cik_quarters_table
 from every_cik_qtr
 select cik_name, quarter, quarter_end_date, value_usd, num_assets AS num_assets_num0
@@ -30,21 +37,26 @@ select cik_name, quarter, quarter_end_date, value_usd, num_assets AS num_assets_
 where cik = '${$page.params.superinvestor}'
 order by quarter asc
 ```
-
+    <!-- let inputYearQuater_cik = cik_quarters_table.map(q => q.quarter)[1]
+    $: quarter.set(inputYearQuater_cik)    -->
+    <!-- = cik_quarters_table.map(q => q.quarter)[1] -->
 <script>
-// /** @type {import('./$types').PageData} */
-    // import { quarter } from '/../../stores.js';
+/** @type {import('./$types').PageData} */
+    // data2 = prop.entries
     $: quarters = cik_quarters_area.map(item => (item.quarter));
+    $: inputYearQuater_cik = '';
     
-    let inputYearQuater_cik = cik_quarters_table.map(q => q.quarter)[1]
-    // $: quarter.set(inputYearQuater_cik)   
+
     
     let min_quarter = cik_max_min_quarter.map(q => q.min_quarter)[0]
-    let max_quarter = cik_max_min_quarter.map(q => q.max_quarter)[0]    
-</script>
-{JSON.stringify(quarters, null, ' ')}
+    let max_quarter = cik_max_min_quarter.map(q => q.max_quarter)[0] 
+    
 
-<SliderYear2  {quarters}/>
+</script>
+<!-- {JSON.stringify(quarters, null, ' ')} -->
+
+
+
 
 # <span style="color: goldenrod;">**<Value data={cik_quarters_table}  column=cik_name row=0/>**</span>
 ## Overview
@@ -69,7 +81,7 @@ composition for each quarter being selected with a slider*
     </Tab>
 
     <Tab label="Value">
-        <AreaChart 
+        <LineChart 
             data={cik_quarters_area}
             x=quarter 
             y=value_usd
@@ -95,12 +107,13 @@ composition for each quarter being selected with a slider*
 
 inputYearQuater_cik: {inputYearQuater_cik}
 
-min_quarter: {min_quarter}
+<!-- min_quarter: {min_quarter}
 
-max_quarter: {max_quarter}
+max_quarter: {max_quarter} -->
 
+<SliderYear2  {quarters} bind:formattedQuarter={inputYearQuater_cik} />
 
-<RangeInputYear min={min_quarter} max={max_quarter} bind:value={inputYearQuater_cik} />
+<!-- <RangeInputYear min={min_quarter} max={max_quarter} bind:value={inputYearQuater_cik} /> -->
 
 
 <BigValue
@@ -164,7 +177,7 @@ max_quarter: {max_quarter}
 <!-- # **<Value data={props.entries} column=cik_name />** in **{inputYearQuater_cik}**: -->
 
 <Tabs>
-    <Tab label="Table">
+    <!-- <Tab label="Table">
         <DataTable data="{props.entries}" search="true" rows=9>
             <Column id="cusip_ticker" title='Ticker'/>
             <Column id="name" />
@@ -172,9 +185,9 @@ max_quarter: {max_quarter}
             <Column id="pct_pct" title='%'/>
         </DataTable>
 
-    </Tab>
+    </Tab> -->
 
-    <Tab label="Chart">
+    <!-- <Tab label="Chart">
         <BarChart 
             data={props.entries} 
             swapXY=true 
@@ -184,7 +197,7 @@ max_quarter: {max_quarter}
             sort=false
         />
 
-    </Tab>
+    </Tab> -->
 </Tabs>
 
 **TODO**:*Correct the slider component so it uses exactly the values available for the selected cik*
@@ -193,7 +206,6 @@ max_quarter: {max_quarter}
 *available. Now, it just has all quarter between two points in time, but sometimes the dataset has*
 *gaps in it, so the quarters that are not in the dataset should not be available in the slider*
 
-<SliderYear />
 
 
 
