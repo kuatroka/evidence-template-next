@@ -19,8 +19,6 @@
   }
 	$: quarterValue = quarters[sliderValue]
 
-	// export let min = quarters[0]
-	// export let max = quarters[quarters.length - 1]
 </script>
 
 <div class="p-2 w-full font-sans text-sm rounded-md">
@@ -36,8 +34,8 @@
     bind:value={sliderValue}
     on:input={handleInput}
     style="width: 100%;
-    accent-color: orange;
-    background-color: #ccc;"
+    accent-color: goldenrod;
+    background-color: #6496bf;"
   >
 </div>
 

@@ -5,6 +5,7 @@ node_modules
 .DS_Store
 static/data
 *.duckdb
+*.duckdb_bak
 *.duckdb.wal
 *.db
 *.parquet

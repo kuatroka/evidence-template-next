@@ -117,6 +117,8 @@ function dynamicFormat(value) {
     }
 }
 
+
+
 let quarters = cik_cusip_per_quarter.map(item => (item.quarter)).reverse();
 $: inputYearQuater = quarters[quarters.length -1];
 </script>
@@ -172,6 +174,7 @@ it needs to be Trillions* -->
             data={cik_cusip_per_quarter2}
             x=year 
             y=total_value_per_quarter_usd
+            yAxisTitle="Value end of Year"
             sort=asc
         />
 
@@ -182,7 +185,7 @@ it needs to be Trillions* -->
         data={cik_cusip_per_quarter2}
         x=year 
         y=num_ciks_per_quarter_num0
-        yAxisTitle="# of Superinvestors"
+        yAxisTitle="Active Superinvestors During Year"
         />
     </Tab>
 
@@ -192,8 +195,15 @@ it needs to be Trillions* -->
         x=year 
         y=num_cusip_per_quarter_num0
         fmt= '#,##0'
-        yAxisTitle="# of unique assets"
+        yAxisTitle="# of Traded Assets"
         />
+    </Tab>
+        <Tab label="Table">
+        <DataTable data="{cik_cusip_per_quarter2}" search="true">
+            <Column id="year" title='Year'/>
+            <Column id="total_value_per_quarter_usd" title='Value at End of Year'/>
+        </DataTable>
+
     </Tab>
 
     <Tab label="Every Cik Last Qtr">
@@ -201,15 +211,8 @@ it needs to be Trillions* -->
             <Column id="cik" title='cik'/>
             <Column id="value_usd" title='Value'/>
         </DataTable>
-
     </Tab>
-    <Tab label="Table">
-        <DataTable data="{cik_cusip_per_quarter2}" search="true">
-            <Column id="year" title='Year'/>
-            <Column id="total_value_per_quarter_usd" title='Value'/>
-        </DataTable>
 
-    </Tab>
 </Tabs>
 
 
@@ -318,7 +321,7 @@ it needs to be Trillions* -->
 
 
 # In Progress Quarter: <span style="color: goldenrod;">{latest_quarter_one_value}</span>
-### Will close on: *{cik_cusip_per_quarter[0].last_reporting_date}*
+### Filing closes on: **{cik_cusip_per_quarter[0].last_reporting_date}**
 <!-- **TODO**:*I could add the number of days till the end of period* -->
 
 
@@ -451,6 +454,7 @@ it needs to be Trillions* -->
 **TODO**:*Formatting of values in the table is not dynamic - needs correction*
 **TODO**:*The search box is not synchronised with the slider. When inputting search term and 
 selecting values on slider the results ignore the search term* 
+
 
 <Tabs>
     <Tab label="Table">

@@ -5,12 +5,12 @@ const conso_duckdb_file = './sources/duckdb-sec/sec_full.duckdb';
 
 export async function load({ params }) {
     const db = await Database.create(conso_duckdb_file);
-    const { superinvestor } = params;
+    // const { superinvestor } = params;
 
     let query_duckdb = `
-    SELECT name_of_issuer AS name, value_usd AS value, cusip_ticker,  quarter, pct_pct
+    SELECT quarter, name_of_issuer, cusip_ticker, value_usd, pct_pct
     FROM main.all_cik_quarter_cusip
-    where cik = '${superinvestor}' `;
+    limit 10`;
     console.time(query_duckdb);
     const entries = await db.all(query_duckdb);
     console.timeEnd(query_duckdb);

@@ -45,24 +45,23 @@ Here we're querying the `orders` table defined in `sources/demo-data`. This tabl
 
 You have access to all of the tables defined in your sources directory. 
 
-```all_orders
+<!-- -- ```all_orders
 
-select 
-	count(*) as n_orders
-from orders 
+-- select 
+-- 	count(*) as n_orders
+-- from orders 
+-- ``` -->
 
-```
+<!-- -- ```orders_by_month
+-- select
+--   date_trunc('month', order_date) as order_month,
+--   count(*) as number_of_orders,
+--   sum(price*quantity) as sales_usd0k,
+--   sum(price*quantity)/count(*) as average_order_value_usd2
+-- from orders
 
-```orders_by_month
-select
-  date_trunc('month', order_date) as order_month,
-  count(*) as number_of_orders,
-  sum(price*quantity) as sales_usd0k,
-  sum(price*quantity)/count(*) as average_order_value_usd2
-from orders
-
-group by 1 order by 1 desc
-```
+-- group by 1 order by 1 desc
+-- ``` -->
 
 You can see both the SQL and the query results by interacting with the query above.
 
@@ -76,22 +75,22 @@ Here we're syncing the value from an input into a query.
 
 Notice that the query is re-executed as you move the slider, and that the results are instant with a 1M record table. 
 
-<RangeInput min=0 max=44 bind:inputPrice={inputPrice} />
+<!-- <RangeInput min=0 max=44 bind:inputPrice={inputPrice} /> -->
 
-```orders_by_month_filtered
-select
-  date_trunc('month', order_date) as order_month,
-  count(*) as number_of_orders,
-  sum(price*quantity) as sales_usd0k,
-  sum(price*quantity)/count(*) as average_order_value_usd2
-from orders
-where price > ${inputPrice}
+<!-- -- ```orders_by_month_filtered
+-- select
+--   date_trunc('month', order_date) as order_month,
+--   count(*) as number_of_orders,
+--   sum(price*quantity) as sales_usd0k,
+--   sum(price*quantity)/count(*) as average_order_value_usd2
+-- from orders
+-- where price > ${inputPrice}
 
-group by 1 order by 1 desc
-```
+-- group by 1 order by 1 desc
+-- ``` -->
 
-<BarChart data={orders_by_month_filtered} y=number_of_orders title = {`Orders with prices greater than $${inputPrice} `} />
+<!-- <BarChart data={orders_by_month_filtered} y=number_of_orders title = {`Orders with prices greater than $${inputPrice} `} /> -->
 
-Last month customers placed **<Value data={orders_by_month} column=number_of_orders/>** orders, of which <Value data={orders_by_month_filtered} column=number_of_orders/> had prices greater than ${inputPrice}.
+<!-- Last month customers placed **<Value data={orders_by_month} column=number_of_orders/>** orders, of which <Value data={orders_by_month_filtered} column=number_of_orders/> had prices greater than ${inputPrice}. -->
 
 

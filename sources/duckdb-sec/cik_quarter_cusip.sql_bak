@@ -1,0 +1,2 @@
+SELECT cik, quarter, cusip, cusip_ticker, value_usd
+FROM main.all_cik_quarter_cusip
