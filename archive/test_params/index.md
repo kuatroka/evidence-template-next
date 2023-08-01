@@ -1,8 +1,10 @@
 <script>
     // import RangeInputYear2 from './components/RangeInputYear2.svelte';
-    import quarterValue  from '/../../components/RangeInputYear2.svelte';    
+    import  RangeInputYear2  from '../../components/RangeInputYear2.svelte';    
     // import Alert from './components/Alert.svelte';
+    $: quarterValue = $quarterValue
 </script>
+{quarterValue}
 
 
 <!-- <RangeInputYear2/> -->

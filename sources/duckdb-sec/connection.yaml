@@ -1,4 +1,4 @@
 name: sec_full
 type: duckdb
 options:
-  filename: sec_full.duckdb
+  filename: sec_full_tr.duckdb

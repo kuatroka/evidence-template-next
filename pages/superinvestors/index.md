@@ -90,8 +90,6 @@ SELECT
 
 <script>
 
-// new Date().getFullYear();
-// console.log(inputYearQuater);
 const latest_quarter = cik_cusip_per_quarter[0]
 const prev_quarter = cik_cusip_per_quarter[1]
 const prev_prev_quarter = cik_cusip_per_quarter[2]
@@ -117,11 +115,11 @@ function dynamicFormat(value) {
     }
 }
 
-
-
 let quarters = cik_cusip_per_quarter.map(item => (item.quarter)).reverse();
 $: inputYearQuater = quarters[quarters.length -1];
+
 </script>
+<!-- {JSON.stringify((Object.keys(data, null, 2)))} -->
 
 <Modal title="Data Quality Warning and Site's Purpose" buttonText='Open Modal'> 
 
@@ -256,7 +254,7 @@ it needs to be Trillions* -->
 
     <ECharts config={
     {title: {
-            text: 'Value by Asset',
+            text: 'Biggest Superinvestors',
             left: 'center'},
         tooltip: {
         formatter: function (params) {
@@ -518,6 +516,8 @@ selecting values on slider the results ignore the search term*
     </Tab>
 
 </Tabs>
+
+
 
 
 

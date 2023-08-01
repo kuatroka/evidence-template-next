@@ -43,7 +43,8 @@ order by quarter asc
 ```
 
 <script>
- /** @type {import('./$types').PageData} */
+//  /** @type {import('./$types').PageData} */
+
 import { writable } from 'svelte/store';
 
 let quarters = cik_quarters_table.map(item => (item.quarter)).reverse();
@@ -60,7 +61,10 @@ $: prev_quarter = quarter_filtered.map(item => (item.prev_quarter))[0];
 
 </script>
 
-<!-- {JSON.stringify(Object.keys(data), null, 2)} -->
+
+<!-- <p>{JSON.stringify(Object.keys(props.entries_from_parent))}</p> -->
+
+<!-- {JSON.stringify($page.data, null, 2)} -->
 
 # <span style="color: goldenrod;">{cik_quarters_table[0].cik_name}</span>
 
@@ -73,6 +77,10 @@ title="Historical Value($)"
 
 ## Quarter:<span style="color: goldenrod;">{inputYearQuater}</span>
 <RangeInputYear {quarters} bind:quarterValue={$inputYearQuaterStore} />
+
+**TODO**:*Play with the color of the slider rail and the trail. Try the same color as the lineChart*
+
+
 
 <BigValue
     data={quarter_filtered}
@@ -113,7 +121,7 @@ title="Historical Value($)"
 <Tabs>
 <Tab label="Table">
 
-<DataTable data="{entries}" link="quarter" search="true" rows=9>
+<DataTable data="{entries}" link="cusip" search="true" rows=9>
     <Column id="name"  title='Name'/>
     <Column id="cusip_ticker" title= "Ticker"/>
     <Column id="value" />
