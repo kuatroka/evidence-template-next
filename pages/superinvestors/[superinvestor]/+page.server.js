@@ -8,7 +8,7 @@ export async function load({ params }) {
     const { superinvestor } = params;
 
     let query_duckdb = `
-    SELECT cusip, name_of_issuer AS name, value_usd AS value, cusip_ticker,  quarter, pct_pct
+    SELECT cusip, name_of_issuer AS name, value_usd AS value, shares, cusip_ticker,  quarter, pct_pct
     FROM main.all_cik_quarter_cusip
     where cik = '${superinvestor}' `;
     console.time(query_duckdb);

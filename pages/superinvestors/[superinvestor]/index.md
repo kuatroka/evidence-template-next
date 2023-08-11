@@ -48,6 +48,7 @@ order by quarter asc
 import { writable } from 'svelte/store';
 
 let quarters = cik_quarters_table.map(item => (item.quarter)).reverse();
+$: years_active = quarters.length/4;
 let inputYearQuaterStore = writable(quarters[quarters.length - 1]);
 $: inputYearQuater = $inputYearQuaterStore;
 $: inputYearQuaterStore.set(inputYearQuater)
@@ -55,30 +56,26 @@ $: inputYearQuaterStore.set(inputYearQuater)
 
 $: entries = props.entries.filter(d => d.quarter === $inputYearQuaterStore);
 $: quarter_filtered = cik_quarters_table.filter(d => d.quarter === $inputYearQuaterStore);
-
 $: prev_quarter = quarter_filtered.map(item => (item.prev_quarter))[0];
     
 
 </script>
 
-
-<!-- <p>{JSON.stringify(Object.keys(props.entries_from_parent))}</p> -->
-
-<!-- {JSON.stringify($page.data, null, 2)} -->
-
 # <span style="color: goldenrod;">{cik_quarters_table[0].cik_name}</span>
+## Active for **<span style="color: steelblue;">{years_active}</span>** years since **<span style="color: steelblue;">{quarters[0]}</span>**
 
-<LineChart 
-title="Historical Value($)"
+<LineChart
+title="Value($)"
     data={cik_quarters_area}
     x=quarter
-    y=value_usd
-/>
+    y=value_usd >
+    <!-- <ReferenceArea xMin="2018Q4" xMax="2020Q4"/> -->
+</LineChart>
 
-## Quarter:<span style="color: goldenrod;">{inputYearQuater}</span>
-<RangeInputYear {quarters} bind:quarterValue={$inputYearQuaterStore} />
+## Quarter: <span style="color: goldenrod;">{inputYearQuater}</span>
+<RangeInputYear {quarters} bind:quarterValue={inputYearQuater} />
 
-**TODO**:*Play with the color of the slider rail and the trail. Try the same color as the lineChart*
+<!-- **TODO**:*Play with the color of the slider rail and the trail. Try the same color as the lineChart* -->
 
 
 
@@ -86,7 +83,7 @@ title="Historical Value($)"
     data={quarter_filtered}
     title="Value"
     value=value_usd  
-    fmt='$#,##0.0,,,"B"' 
+    fmt={'[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";$#,##0k'}
     comparison=prc_change_value_pct
     comparisonTitle="% Over {prev_quarter}"
 />
@@ -97,26 +94,26 @@ title="Historical Value($)"
     value=num_assets_num0  
     fmt='#,##0'  
     comparison=prc_change_num_assets_pct
-    omparisonTitle="% Over {prev_quarter}"
+    comparisonTitle="% Over {prev_quarter}"
 /> 
 
 <BigValue
     data={quarter_filtered}
-    title="Placeholder: Synthetic P/L - Qtr ove Qtr"
+    title="Placeholder: Synthetic P/L"
     value=num_assets_num0  
     fmt='#,##0'  
     comparison=prc_change_num_assets_pct
     omparisonTitle="% Over {prev_quarter}"
 /> 
 
-<BigValue
+<!-- <BigValue
     data={quarter_filtered}
     title="Placeholder: Synthetic P/L - All time"
     value=num_assets_num0  
     fmt='#,##0'  
     comparison=prc_change_num_assets_pct
     omparisonTitle="% Over {prev_quarter}"
-/> 
+/>  -->
 
 <Tabs>
 <Tab label="Table">
@@ -124,8 +121,9 @@ title="Historical Value($)"
 <DataTable data="{entries}" link="cusip" search="true" rows=9>
     <Column id="name"  title='Name'/>
     <Column id="cusip_ticker" title= "Ticker"/>
-    <Column id="value" />
-    <Column id="pct_pct" title='%' />    
+    <Column id="value" fmt={'[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";$#,##0k'}/>
+    <Column id="shares" />
+    <Column id="pct_pct" title='%' />  
 </DataTable>
 </Tab>
 
