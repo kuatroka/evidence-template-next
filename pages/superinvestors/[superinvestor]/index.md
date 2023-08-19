@@ -57,6 +57,9 @@ $: inputYearQuaterStore.set(inputYearQuater)
 $: entries = props.entries.filter(d => d.quarter === $inputYearQuaterStore);
 $: quarter_filtered = cik_quarters_table.filter(d => d.quarter === $inputYearQuaterStore);
 $: prev_quarter = quarter_filtered.map(item => (item.prev_quarter))[0];
+
+const format_usd = '[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";$#,##0k'
+const format_shares = '[>=1000000000]#,##0.0,,,"B";[>=1000000]#,##0.0,"M";#,##0k'
     
 
 </script>
@@ -68,7 +71,8 @@ $: prev_quarter = quarter_filtered.map(item => (item.prev_quarter))[0];
 title="Value($)"
     data={cik_quarters_area}
     x=quarter
-    y=value_usd >
+    y=value_usd fmt={format_usd}
+    yFmt={format_usd}>
     <!-- <ReferenceArea xMin="2018Q4" xMax="2020Q4"/> -->
 </LineChart>
 
@@ -81,9 +85,9 @@ title="Value($)"
 
 <BigValue
     data={quarter_filtered}
-    title="Value"
+    title="Value($)"
     value=value_usd  
-    fmt={'[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";$#,##0k'}
+    fmt={format_usd}
     comparison=prc_change_value_pct
     comparisonTitle="% Over {prev_quarter}"
 />
@@ -92,7 +96,7 @@ title="Value($)"
     data={quarter_filtered}
     title="Assets"
     value=num_assets_num0  
-    fmt='#,##0'  
+    fmt={format_shares}  
     comparison=prc_change_num_assets_pct
     comparisonTitle="% Over {prev_quarter}"
 /> 
@@ -181,4 +185,4 @@ title="Value($)"
     </Tab>
 </Tabs>
 
-
+**TODO**:*Add more stats for individual superinvestor. Maybe the best and the worst trades...etc**

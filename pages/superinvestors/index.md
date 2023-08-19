@@ -128,6 +128,9 @@ function dynamicFormat(value) {
     }
 }
 
+const format_usd = '[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";$#,##0k'
+const format_shares = '[>=1000000000]#,##0.0,,,"B";[>=1000000]#,##0.0,"M";#,##0k'
+
 </script>
 
 <!-- {JSON.stringify((Object.keys(data, null, 2)))} -->
@@ -170,6 +173,8 @@ changing data* -->
     title="Traded Assets"
     value=total_cusip_num0
 />
+
+**TODO**:*Maybe add one more BigValue here for Total Value traded in 25 years*
 
 
 
@@ -233,7 +238,7 @@ it needs to be Trillions* -->
 
 
 # Quarter: <span style="color: goldenrod;">{inputYearQuater}</span>
-### Filing closes on: **{cik_cusip_per_quarter[0].last_reporting_date}**
+### Filing closes on: **{cik_cusip_per_quarter[0].last_reporting_date}** (Fix this)
 <!-- **TODO**:*Fix the code for the last reporting date/reporting closed date* -->
 
 <RangeInputYear {quarters} bind:quarterValue={inputYearQuater} />
@@ -278,9 +283,9 @@ selecting values on slider the results ignore the search term*  -->
     <Tab label="Table">
         <DataTable data="{every_cik_every_qtr_filtered}" link="cik" search="true">
             <Column id="cik_name" title='Superinvestor'/>
-            <Column id="num_assets" title='# Assets'/>
-            <Column id="value_usd" title='Value($)' fmt={'[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";[>=1000]$#,##0k'}/>
-            <Column id="pct_pct" title='% of All'/>
+            <Column id="num_assets" title='Assets (#)'/>
+            <Column id="value_usd" title='Value ($)' fmt={'[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";[>=1000]$#,##0k'}/>
+            <Column id="pct_pct" title='Weight (%)'/>
         </DataTable>
 
     </Tab>
@@ -338,6 +343,14 @@ selecting values on slider the results ignore the search term*  -->
     </Tab>
 
 </Tabs>
+
+**TODO**:*I'd like to make the Racing Bar chart work*
+**TODO**:*It might be interesting to make a timeline of all cik over all 25 years.
+I could show when each cik first appeared and when it disappeared. When it had gaps in being active
+I could use color coding. Those with no gaps - blue, with gaps - red...o something like it
+i could use this [example](https://unovis.dev/gallery/view?collection=Lines%20and%20Areas&title=Basic%20Timeline) to do the timeline*
+
+
 
 
 

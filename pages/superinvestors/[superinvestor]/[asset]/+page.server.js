@@ -28,7 +28,9 @@ export async function load({ params }) {
     (SELECT COUNT(DISTINCT tr_id) FROM main.main WHERE cik = '${superinvestor}' AND cusip = '${asset}') AS num_tr,
     ANY_VALUE(name_of_issuer) AS name_of_issuer,
     ANY_VALUE(cik_name) AS cik_name,
-    ANY_VALUE(cusip) AS cusip
+    ANY_VALUE(cusip) AS cusip,
+    ANY_VALUE(tr_duration_qtr) AS tr_duration_qtr,
+    ANY_VALUE(tr_pnl_prc) AS tr_pnl,
     FROM main.main
     WHERE cik = '${superinvestor}' AND cusip = '${asset}'
     GROUP BY 1, 2
@@ -53,10 +55,26 @@ export async function load({ params }) {
         RIGHT(tr_id, 6) AS tr_open, 
         name_of_issuer,
         cik_name,
+        value,
+        shares,
+        qtr_pnl_prc
         FROM main.main
         WHERE cik = '${superinvestor}' AND cusip = '${asset}'
-        ORDER BY cusip, quarter
-    `
+        ORDER BY cusip, quarter`
+
+        let query_duckdb3 = `
+        SELECT 
+        cik::string AS cik,
+        cik_name,
+        '/superinvestors/' || cik::string  || '/${asset}'as link,
+        COUNT(DISTINCT tr_id) AS num_tr_per_cik, 
+        ROUND(AVG(DISTINCT tr_pnl_prc),2) AS avg_tr_pnl_per_cik,
+        (SELECT COUNT(DISTINCT tr_id) FROM main.main WHERE cusip = '${asset}') AS total_num_tr,
+        (SELECT COUNT(DISTINCT cik) FROM main.main WHERE cusip = '${asset}') AS total_num_cik,
+        FROM main.main
+        WHERE cusip = '${asset}'
+        GROUP BY 1, 2
+        `
 
 
 
@@ -68,10 +86,15 @@ export async function load({ params }) {
     const tr_per_cik_drilldown = await db.all(query_duckdb2);
     console.timeEnd(query_duckdb);
 
+    console.time(query_duckdb3);
+    const other_cik_per_cusip = await db.all(query_duckdb3);
+    console.timeEnd(query_duckdb3);
+
     await db.close();
     console.log(tr_per_cik.slice(0, 2));
     console.log(tr_per_cik_drilldown.slice(0, 2));
-    return { tr_per_cik, tr_per_cik_drilldown };
+    console.log(other_cik_per_cusip.slice(0, 2));
+    return { tr_per_cik, tr_per_cik_drilldown, other_cik_per_cusip };
 }
 
 
