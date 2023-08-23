@@ -67,6 +67,9 @@ focus on what is really needed...*
 # <span style="color: goldenrod;">Who else traded in<br>**<span style="color: steelblue;">{name_of_issuer}</span>** 
 ### Since 1999  there have been **{total_cik_per_cusip}** superinvestors who traded **{total_tr_per_cusip}** times in {name_of_issuer}
 
+**TODO**:*I need to make the part 'since 1999' dynamic and dependent on the actual data.
+I need to have a real year where trading in this company started for the first time"*
+
 <DataTable data={props.other_cik_per_cusip} link="link">
 <Column id="cik_name"  title='Superinvestor' sort=true/>
 <Column id="num_tr_per_cik"  title='# Tr' />
