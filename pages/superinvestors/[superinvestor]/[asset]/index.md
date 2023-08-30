@@ -5,7 +5,8 @@
     const name_of_issuer = props.tr_per_cik[0].name_of_issuer 
     const num_tr = props.tr_per_cik[0].num_tr
     const format_usd = '[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0.0,,"M";$#,##0k'
-    const format_shares = '[>=1000000000]#,##0.0,,,"B";[>=1000000]#,##0.0,"M";#,##0k'
+    const format_usd_no_t = '[>=10000000000]$#,##0.0,,,"B";[>=10000000]$#,##0.0,"M";[>=1000][<100000]$#,##0;$#,##0k'
+    const format_shares = '[>=10000000000]#,##0.0,,,"B";[>=10000000]#,##0.0,"M";[>=1000][<100000]#,##0;#,##0k'
 
     // '[>=1000000000000]$#,##0.0,,,,"T";[>=1000000000]$#,##0.0,,,"B";[>=1000000]$#,##0,,"M";$#,##k'
 </script>
@@ -21,10 +22,10 @@
 <DataTable data={props.tr_per_cik} link=link>
 <Column id="tr_number"  title='Tr #' align="left" />
     <Column id="tr_open"  title='Open'/>
-    <Column id="tr_open_value"  title='($)' fmt={format_usd} align="left"/>
+    <Column id="tr_open_value"  title='($)' fmt={format_usd_no_t} align="left"/>
     <Column id="tr_duration_qtr" title='# Quarters' align="left"/>
     <Column id="tr_close"  title='Close' align="right"/>
-    <Column id="tr_close_value" title='($)' fmt={format_usd} align="right"/>
+    <Column id="tr_close_value" title='($)' fmt={format_usd_no_t} align="right"/>
     <Column id="tr_pnl" title='%P/L' fmt='#0.01\%'/>
 </DataTable>
 
@@ -35,12 +36,14 @@
 
 <DataTable data={props.tr_per_cik_drilldown.filter(d=>d.tr_id ===   $page.url.searchParams.get('tr_id'))}>
 <Column id="quarter"  title='Quarter' sort=true/>
+<Column id="sec_price"  title='SEC Price'/>
 <Column id="tr_type"  title='Type' />
-<Column id="tr_shares"  title='Tr Shares(#)' fmt={format_shares}/>
+<!-- <Column id="tr_shares"  title='Tr Shares(#)' fmt='[>=10000000000]#,##0.0,,,"B";[>=10000000]#,##0.0,"M";[>=1000][<100000]#,##0;-#,##0;#,##0k'
+/> -->
 <Column id="tr_value"  title='Tr Value' fmt={format_usd}/>
 <Column id="value"  title='Total Value' fmt={format_usd}/>
 <Column id="shares"  title='Total Shares'/>
-<Column id="qtr_pnl_prc"  title='Qtr %P/L' fmt='#0.01\%'/>
+<Column id="qtr_pnl_prc"  title='Rolling %P/L' fmt='#0.01\%'/>
 </DataTable>
 
 {:else}
@@ -67,8 +70,11 @@ focus on what is really needed...*
 # <span style="color: goldenrod;">Who else traded in<br>**<span style="color: steelblue;">{name_of_issuer}</span>** 
 ### Since 1999  there have been **{total_cik_per_cusip}** superinvestors who traded **{total_tr_per_cusip}** times in {name_of_issuer}
 
-**TODO**:*I need to make the part 'since 1999' dynamic and dependent on the actual data.
-I need to have a real year where trading in this company started for the first time"*
+**TODO**:*1- I need to make the part 'since 1999' dynamic and dependent on the actual data.
+I need to have a real year where trading in this company started for the first time"
+2- Add a column that show the quarter for the earliest trade and current holdings' value*
+
+**TODO**:*Add a slider to select the quarter on which a trade was open and add a search box for Superinvestor *
 
 <DataTable data={props.other_cik_per_cusip} link="link">
 <Column id="cik_name"  title='Superinvestor' sort=true/>

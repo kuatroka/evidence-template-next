@@ -80,6 +80,7 @@ title="Value($)"
 <RangeInputYear {quarters} bind:quarterValue={inputYearQuater} />
 
 <!-- **TODO**:*Play with the color of the slider rail and the trail. Try the same color as the lineChart* -->
+**TODO**:* 1 -Change the comparison from percentage change to actual change*
 
 
 
@@ -95,8 +96,7 @@ title="Value($)"
 <BigValue
     data={quarter_filtered}
     title="Assets"
-    value=num_assets_num0  
-    fmt={format_shares}  
+    value=num_assets_num0   
     comparison=prc_change_num_assets_pct
     comparisonTitle="% Over {prev_quarter}"
 /> 
@@ -119,6 +119,7 @@ title="Value($)"
     omparisonTitle="% Over {prev_quarter}"
 />  -->
 
+**TODO**:*To the table, add change of # shares from the prev quarter in percentages for each cusip *
 <Tabs>
 <Tab label="Table">
 
